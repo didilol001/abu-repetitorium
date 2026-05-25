@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import { allQuestions } from '../data/index.js'
 import { supabase } from '../lib/supabase.js'
 
@@ -34,21 +34,29 @@ export function useProgress(username) {
       })
   }, [username])
 
+  const progressRef = React.useRef(progress)
+  progressRef.current = progress
+
   const recordAnswer = useCallback((id, wasCorrect) => {
-    setProgress(prev => {
-      const rec = prev[id] || { attempts: 0, correct: 0, history: [] }
-      const history = [...rec.history, wasCorrect].slice(-5)
-      const next = {
-        attempts: rec.attempts + 1,
-        correct: rec.correct + (wasCorrect ? 1 : 0),
-        history,
-      }
-      supabase.from('progress').upsert(
+    const rec = progressRef.current[id] || { attempts: 0, correct: 0, history: [] }
+    const history = [...rec.history, wasCorrect].slice(-5)
+    const next = {
+      attempts: rec.attempts + 1,
+      correct: rec.correct + (wasCorrect ? 1 : 0),
+      history,
+    }
+
+    setProgress(prev => ({ ...prev, [id]: next }))
+
+    supabase
+      .from('progress')
+      .upsert(
         { username, question_id: id, ...next, updated_at: new Date().toISOString() },
         { onConflict: 'username,question_id' }
       )
-      return { ...prev, [id]: next }
-    })
+      .then(({ error }) => {
+        if (error) console.error('Supabase upsert error:', error)
+      })
   }, [username])
 
   const getReadiness = useCallback((years = [1, 2, 3, 4]) => {
