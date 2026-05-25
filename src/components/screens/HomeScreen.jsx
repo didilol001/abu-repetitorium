@@ -1,6 +1,6 @@
 import ProgressDashboard from '../ui/ProgressDashboard.jsx'
 
-export default function HomeScreen({ navigate, getReadiness, resetProgress }) {
+export default function HomeScreen({ navigate, getReadiness, resetProgress, username, onLogout }) {
   const overall = getReadiness([1, 2, 3, 4])
 
   function handleReset() {
@@ -11,9 +11,17 @@ export default function HomeScreen({ navigate, getReadiness, resetProgress }) {
 
   return (
     <div className="flex flex-col gap-6 px-4 py-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-abu-text">ABU Repetitorium</h1>
-        <p className="text-abu-muted text-sm mt-1">Prüfungsvorbereitung Lehrjahre 1–4</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-abu-text">ABU Repetitorium</h1>
+          <p className="text-abu-muted text-sm mt-0.5">Hallo, <span className="text-abu-text font-medium">{username}</span></p>
+        </div>
+        <button
+          className="text-abu-muted text-xs px-3 py-1.5 rounded-lg border border-abu-border hover:text-abu-text hover:border-abu-neutral transition-colors"
+          onClick={onLogout}
+        >
+          Abmelden
+        </button>
       </div>
 
       <div className="bg-abu-card rounded-2xl p-5 border border-abu-border">

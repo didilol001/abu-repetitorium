@@ -1,25 +1,27 @@
 import { useState, useCallback } from 'react'
 import { allQuestions } from '../data/index.js'
 
-const STORAGE_KEY = 'abu_progress_v1'
+function storageKey(username) {
+  return `abu_progress_v1_${username}`
+}
 
-function loadProgress() {
+function loadProgress(username) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY)
+    const raw = localStorage.getItem(storageKey(username))
     return raw ? JSON.parse(raw) : {}
   } catch {
     return {}
   }
 }
 
-function saveProgress(data) {
+function saveProgress(username, data) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+    localStorage.setItem(storageKey(username), JSON.stringify(data))
   } catch {}
 }
 
-export function useProgress() {
-  const [progress, setProgress] = useState(loadProgress)
+export function useProgress(username) {
+  const [progress, setProgress] = useState(() => loadProgress(username))
 
   const recordAnswer = useCallback((id, wasCorrect) => {
     setProgress(prev => {
@@ -33,10 +35,10 @@ export function useProgress() {
           history,
         },
       }
-      saveProgress(updated)
+      saveProgress(username, updated)
       return updated
     })
-  }, [])
+  }, [username])
 
   const getReadiness = useCallback((years = [1, 2, 3, 4]) => {
     const questions = allQuestions.filter(q => years.includes(q.year))
@@ -50,9 +52,9 @@ export function useProgress() {
   }, [progress])
 
   const resetProgress = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY)
+    localStorage.removeItem(storageKey(username))
     setProgress({})
-  }, [])
+  }, [username])
 
   return { progress, recordAnswer, getReadiness, resetProgress }
 }
