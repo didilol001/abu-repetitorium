@@ -33,8 +33,8 @@ export default function FilterScreen({ navigate, initialFilter }) {
   }
 
   return (
-    <div className="flex flex-col gap-6 px-4 py-6">
-      <div className="flex items-center gap-3">
+    <div className="h-full flex flex-col px-4 py-4">
+      <div className="flex items-center gap-3 mb-5 flex-shrink-0">
         <button
           className="text-abu-muted p-2 rounded-xl hover:bg-abu-card active:scale-95 transition-all"
           onClick={() => navigate('home')}
@@ -44,8 +44,8 @@ export default function FilterScreen({ navigate, initialFilter }) {
         <h1 className="text-lg font-bold text-abu-text">Lernmodus wählen</h1>
       </div>
 
-      <div className="bg-abu-card rounded-2xl p-5 border border-abu-border">
-        <h2 className="text-sm font-semibold text-abu-muted uppercase tracking-wider mb-3">Lehrjahr</h2>
+      <div className="bg-abu-card rounded-2xl p-4 border border-abu-border mb-4 flex-shrink-0">
+        <h2 className="text-xs font-semibold text-abu-muted uppercase tracking-wider mb-3">Lehrjahr</h2>
         <div className="grid grid-cols-5 gap-2">
           <button
             className={`py-3 rounded-xl border-2 text-sm font-bold transition-all active:scale-95 ${
@@ -73,8 +73,8 @@ export default function FilterScreen({ navigate, initialFilter }) {
         </div>
       </div>
 
-      <div className="bg-abu-card rounded-2xl p-5 border border-abu-border">
-        <h2 className="text-sm font-semibold text-abu-muted uppercase tracking-wider mb-3">Fragentyp</h2>
+      <div className="bg-abu-card rounded-2xl p-4 border border-abu-border mb-4 flex-shrink-0">
+        <h2 className="text-xs font-semibold text-abu-muted uppercase tracking-wider mb-3">Fragentyp</h2>
         <div className="grid grid-cols-3 gap-2">
           {[
             { value: 'mc', label: 'Multiple Choice' },
@@ -96,21 +96,24 @@ export default function FilterScreen({ navigate, initialFilter }) {
         </div>
       </div>
 
-      <div className="text-center text-abu-muted text-sm">
-        {questionCount} Fragen ausgewählt
-      </div>
+      <div className="flex-1" />
 
-      <button
-        className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
-          questionCount > 0
-            ? 'bg-abu-primary text-white active:scale-[0.97] shadow-lg shadow-blue-500/20'
-            : 'bg-abu-border text-abu-neutral cursor-not-allowed'
-        }`}
-        onClick={handleStart}
-        disabled={questionCount === 0}
-      >
-        Starten ({questionCount})
-      </button>
+      <div className="flex-shrink-0">
+        <p className="text-center text-abu-muted text-sm mb-3">
+          {questionCount} Fragen ausgewählt
+        </p>
+        <button
+          className={`w-full py-4 rounded-2xl font-bold text-lg transition-all ${
+            questionCount > 0
+              ? 'bg-abu-primary text-white active:scale-[0.97] shadow-lg shadow-blue-500/20'
+              : 'bg-abu-border text-abu-neutral cursor-not-allowed'
+          }`}
+          onClick={handleStart}
+          disabled={questionCount === 0}
+        >
+          Starten ({questionCount})
+        </button>
+      </div>
     </div>
   )
 }

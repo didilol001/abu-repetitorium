@@ -9,12 +9,12 @@ export default function ProgressBar({ label, value, showPercent = true }) {
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-1">
-        <span className="text-sm text-abu-muted">{label}</span>
+        <span className="text-xs text-abu-muted">{label}</span>
         {showPercent && (
-          <span className="text-sm font-semibold text-abu-text">{clampedValue}%</span>
+          <span className="text-xs font-semibold text-abu-text">{clampedValue}%</span>
         )}
       </div>
-      <div className="w-full h-3 bg-abu-border rounded-full overflow-hidden">
+      <div className="w-full h-2 bg-abu-border rounded-full overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-500 ${colorClass}`}
           style={{ width: `${clampedValue}%` }}

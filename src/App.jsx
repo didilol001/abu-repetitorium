@@ -36,8 +36,8 @@ export default function App() {
 
   if (!currentUser) {
     return (
-      <div className="min-h-screen bg-abu-bg">
-        <div className="max-w-md mx-auto min-h-screen">
+      <div className="h-full bg-abu-bg">
+        <div className="max-w-md mx-auto h-full">
           <LoginScreen onLogin={login} onRegister={register} />
         </div>
       </div>
@@ -46,15 +46,15 @@ export default function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-abu-bg flex items-center justify-center">
+      <div className="h-full bg-abu-bg flex items-center justify-center">
         <div className="text-abu-muted text-sm">Fortschritt wird geladen…</div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-abu-bg">
-      <div className="max-w-md mx-auto min-h-screen">
+    <div className="h-full bg-abu-bg">
+      <div className="max-w-md mx-auto h-full">
         {view === 'home' && (
           <HomeScreen
             navigate={navigate}

@@ -24,7 +24,7 @@ export default function LoginScreen({ onLogin, onRegister }) {
   }
 
   return (
-    <div className="flex flex-col min-h-screen justify-center px-6 py-8">
+    <div className="flex flex-col h-full justify-center px-6 py-8">
       <div className="text-center mb-8">
         <h1 className="text-3xl font-bold text-abu-text">ABU Repetitorium</h1>
         <p className="text-abu-muted text-sm mt-2">Prüfungsvorbereitung Lehrjahre 1–4</p>

@@ -8,9 +8,9 @@ export default function ProgressDashboard({ getReadiness }) {
   const y4 = getReadiness([4])
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       <ProgressBar label="Gesamt" value={overall} />
-      <div className="border-t border-abu-border pt-3 space-y-3">
+      <div className="border-t border-abu-border pt-2 space-y-2">
         <ProgressBar label="1. Lehrjahr" value={y1} />
         <ProgressBar label="2. Lehrjahr" value={y2} />
         <ProgressBar label="3. Lehrjahr" value={y3} />

@@ -7,15 +7,10 @@ export default function FlipCard({ question, answer, onResult }) {
     if (!isFlipped) setIsFlipped(true)
   }
 
-  function handleResult(wasCorrect) {
-    onResult(wasCorrect)
-  }
-
   return (
-    <div className="flex flex-col gap-4 w-full">
+    <div className="flex flex-col flex-1 min-h-0 gap-3">
       <div
-        className="perspective w-full cursor-pointer"
-        style={{ height: '260px' }}
+        className="perspective flex-1 min-h-0 cursor-pointer"
         onClick={handleFlip}
       >
         <div className={`flip-card-inner ${isFlipped ? 'flipped' : ''}`}>
@@ -37,22 +32,22 @@ export default function FlipCard({ question, answer, onResult }) {
         </div>
       </div>
 
-      {isFlipped && (
-        <div className="flex gap-3">
-          <button
-            className="flex-1 py-3 rounded-xl bg-red-500/20 border-2 border-red-500 text-red-300 font-semibold text-sm active:scale-[0.97] transition-transform"
-            onClick={() => handleResult(false)}
-          >
-            ✗ Falsch
-          </button>
-          <button
-            className="flex-1 py-3 rounded-xl bg-green-500/20 border-2 border-green-500 text-green-300 font-semibold text-sm active:scale-[0.97] transition-transform"
-            onClick={() => handleResult(true)}
-          >
-            ✓ Richtig
-          </button>
-        </div>
-      )}
+      <div className={`flex gap-3 flex-shrink-0 transition-opacity duration-200 ${
+        isFlipped ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      }`}>
+        <button
+          className="flex-1 py-4 rounded-2xl bg-red-500/20 border-2 border-red-500 text-red-300 font-semibold text-base active:scale-[0.97] transition-transform"
+          onClick={() => onResult(false)}
+        >
+          ✗ Falsch
+        </button>
+        <button
+          className="flex-1 py-4 rounded-2xl bg-green-500/20 border-2 border-green-500 text-green-300 font-semibold text-base active:scale-[0.97] transition-transform"
+          onClick={() => onResult(true)}
+        >
+          ✓ Richtig
+        </button>
+      </div>
     </div>
   )
 }
