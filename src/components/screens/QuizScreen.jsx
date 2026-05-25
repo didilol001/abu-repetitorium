@@ -3,6 +3,7 @@ import { useSession } from '../../hooks/useSession.js'
 import OptionButton from '../ui/OptionButton.jsx'
 import FlipCard from '../ui/FlipCard.jsx'
 import YearBadge from '../ui/YearBadge.jsx'
+import ExplanationModal from '../ui/ExplanationModal.jsx'
 
 export default function QuizScreen({ navigate, filter, progress, recordAnswer }) {
   const session = useSession(filter, progress)
@@ -114,6 +115,7 @@ export default function QuizScreen({ navigate, filter, progress, recordAnswer })
               key={q.id}
               question={q.question}
               answer={q.answer}
+              questionData={q}
               onResult={handleFlipResult}
             />
           </div>
@@ -124,6 +126,8 @@ export default function QuizScreen({ navigate, filter, progress, recordAnswer })
 }
 
 function MCQuestion({ question, selected, revealed, onOptionClick, onPruefen, onWeiter }) {
+  const [showExplanation, setShowExplanation] = useState(false)
+
   return (
     <div className="flex flex-col h-full">
       <div className="bg-abu-card rounded-2xl p-4 border border-abu-border flex-shrink-0 mb-3">
@@ -160,14 +164,27 @@ function MCQuestion({ question, selected, revealed, onOptionClick, onPruefen, on
             Prüfen
           </button>
         ) : (
-          <button
-            className="w-full py-4 rounded-2xl bg-abu-card border-2 border-abu-border text-abu-text font-bold text-base active:scale-[0.97] transition-all"
-            onClick={onWeiter}
-          >
-            Weiter →
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="flex-1 py-4 rounded-2xl bg-abu-card border-2 border-abu-border text-abu-text font-bold text-base active:scale-[0.97] transition-all"
+              onClick={onWeiter}
+            >
+              Weiter →
+            </button>
+            <button
+              className="w-14 py-4 rounded-2xl bg-abu-card border-2 border-abu-border text-abu-muted font-bold text-xl active:scale-[0.97] transition-all hover:border-abu-primary hover:text-abu-primary"
+              onClick={() => setShowExplanation(true)}
+              title="Erklärung anzeigen"
+            >
+              ?
+            </button>
+          </div>
         )}
       </div>
+
+      {showExplanation && (
+        <ExplanationModal question={question} onClose={() => setShowExplanation(false)} />
+      )}
     </div>
   )
 }

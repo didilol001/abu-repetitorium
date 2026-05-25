@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import ExplanationModal from './ExplanationModal.jsx'
 
-export default function FlipCard({ question, answer, onResult }) {
+export default function FlipCard({ question, answer, questionData, onResult }) {
   const [isFlipped, setIsFlipped] = useState(false)
+  const [showExplanation, setShowExplanation] = useState(false)
 
   function handleFlip() {
     if (!isFlipped) setIsFlipped(true)
@@ -32,7 +34,7 @@ export default function FlipCard({ question, answer, onResult }) {
         </div>
       </div>
 
-      <div className={`flex gap-3 flex-shrink-0 transition-opacity duration-200 ${
+      <div className={`flex gap-2 flex-shrink-0 transition-opacity duration-200 ${
         isFlipped ? 'opacity-100' : 'opacity-0 pointer-events-none'
       }`}>
         <button
@@ -42,12 +44,23 @@ export default function FlipCard({ question, answer, onResult }) {
           ✗ Falsch
         </button>
         <button
+          className="w-14 py-4 rounded-2xl bg-abu-card border-2 border-abu-border text-abu-muted font-bold text-xl active:scale-[0.97] transition-transform hover:border-abu-primary hover:text-abu-primary"
+          onClick={() => setShowExplanation(true)}
+          title="Erklärung anzeigen"
+        >
+          ?
+        </button>
+        <button
           className="flex-1 py-4 rounded-2xl bg-green-500/20 border-2 border-green-500 text-green-300 font-semibold text-base active:scale-[0.97] transition-transform"
           onClick={() => onResult(true)}
         >
           ✓ Richtig
         </button>
       </div>
+
+      {showExplanation && questionData && (
+        <ExplanationModal question={questionData} onClose={() => setShowExplanation(false)} />
+      )}
     </div>
   )
 }
