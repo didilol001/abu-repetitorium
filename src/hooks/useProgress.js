@@ -1,42 +1,53 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { allQuestions } from '../data/index.js'
-
-function storageKey(username) {
-  return `abu_progress_v1_${username}`
-}
-
-function loadProgress(username) {
-  try {
-    const raw = localStorage.getItem(storageKey(username))
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
-}
-
-function saveProgress(username, data) {
-  try {
-    localStorage.setItem(storageKey(username), JSON.stringify(data))
-  } catch {}
-}
+import { supabase } from '../lib/supabase.js'
 
 export function useProgress(username) {
-  const [progress, setProgress] = useState(() => loadProgress(username))
+  const [progress, setProgress] = useState({})
+  const [loading, setLoading] = useState(!!username)
+
+  useEffect(() => {
+    if (!username) {
+      setProgress({})
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    supabase
+      .from('progress')
+      .select('question_id, attempts, correct, history')
+      .eq('username', username)
+      .then(({ data }) => {
+        if (data) {
+          const map = {}
+          for (const row of data) {
+            map[row.question_id] = {
+              attempts: row.attempts,
+              correct: row.correct,
+              history: row.history,
+            }
+          }
+          setProgress(map)
+        }
+        setLoading(false)
+      })
+  }, [username])
 
   const recordAnswer = useCallback((id, wasCorrect) => {
     setProgress(prev => {
       const rec = prev[id] || { attempts: 0, correct: 0, history: [] }
       const history = [...rec.history, wasCorrect].slice(-5)
-      const updated = {
-        ...prev,
-        [id]: {
-          attempts: rec.attempts + 1,
-          correct: rec.correct + (wasCorrect ? 1 : 0),
-          history,
-        },
+      const next = {
+        attempts: rec.attempts + 1,
+        correct: rec.correct + (wasCorrect ? 1 : 0),
+        history,
       }
-      saveProgress(username, updated)
-      return updated
+      supabase.from('progress').upsert(
+        { username, question_id: id, ...next, updated_at: new Date().toISOString() },
+        { onConflict: 'username,question_id' }
+      )
+      return { ...prev, [id]: next }
     })
   }, [username])
 
@@ -51,10 +62,10 @@ export function useProgress(username) {
     return Math.round((learned.length / questions.length) * 100)
   }, [progress])
 
-  const resetProgress = useCallback(() => {
-    localStorage.removeItem(storageKey(username))
+  const resetProgress = useCallback(async () => {
+    await supabase.from('progress').delete().eq('username', username)
     setProgress({})
   }, [username])
 
-  return { progress, recordAnswer, getReadiness, resetProgress }
+  return { progress, recordAnswer, getReadiness, resetProgress, loading }
 }

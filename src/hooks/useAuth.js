@@ -1,22 +1,7 @@
 import { useState } from 'react'
+import { supabase } from '../lib/supabase.js'
 
-const USERS_KEY = 'abu_users'
 const SESSION_KEY = 'abu_session'
-
-function loadUsers() {
-  try {
-    const raw = localStorage.getItem(USERS_KEY)
-    return raw ? JSON.parse(raw) : {}
-  } catch {
-    return {}
-  }
-}
-
-function saveUsers(users) {
-  try {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users))
-  } catch {}
-}
 
 function loadSession() {
   try {
@@ -29,22 +14,34 @@ function loadSession() {
 export function useAuth() {
   const [currentUser, setCurrentUser] = useState(loadSession)
 
-  function login(username, password) {
-    const users = loadUsers()
-    if (!users[username]) return 'Benutzername nicht gefunden.'
-    if (users[username] !== password) return 'Falsches Passwort.'
+  async function login(username, password) {
+    const { data, error } = await supabase
+      .from('users')
+      .select('password')
+      .eq('username', username)
+      .single()
+
+    if (error || !data) return 'Benutzername nicht gefunden.'
+    if (data.password !== password) return 'Falsches Passwort.'
+
     localStorage.setItem(SESSION_KEY, username)
     setCurrentUser(username)
     return null
   }
 
-  function register(username, password) {
+  async function register(username, password) {
     if (!username.trim()) return 'Benutzername darf nicht leer sein.'
     if (!password) return 'Passwort darf nicht leer sein.'
-    const users = loadUsers()
-    if (users[username]) return 'Benutzername bereits vergeben.'
-    users[username] = password
-    saveUsers(users)
+
+    const { error } = await supabase
+      .from('users')
+      .insert({ username, password })
+
+    if (error) {
+      if (error.code === '23505') return 'Benutzername bereits vergeben.'
+      return 'Fehler beim Registrieren. Bitte erneut versuchen.'
+    }
+
     localStorage.setItem(SESSION_KEY, username)
     setCurrentUser(username)
     return null

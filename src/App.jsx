@@ -15,7 +15,7 @@ export default function App() {
   const [filter, setFilter] = useState(DEFAULT_FILTER)
   const [sessionResult, setSessionResult] = useState(null)
   const [sessionKey, setSessionKey] = useState(0)
-  const { progress, recordAnswer, getReadiness, resetProgress } = useProgress(currentUser)
+  const { progress, recordAnswer, getReadiness, resetProgress, loading } = useProgress(currentUser)
 
   function navigate(screen, extras = {}) {
     if (extras.filter) setFilter(extras.filter)
@@ -40,6 +40,14 @@ export default function App() {
         <div className="max-w-md mx-auto min-h-screen">
           <LoginScreen onLogin={login} onRegister={register} />
         </div>
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-abu-bg flex items-center justify-center">
+        <div className="text-abu-muted text-sm">Fortschritt wird geladen…</div>
       </div>
     )
   }
