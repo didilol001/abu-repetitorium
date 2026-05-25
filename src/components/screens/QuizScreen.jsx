@@ -49,7 +49,8 @@ export default function QuizScreen({ navigate, filter, progress, recordAnswer })
     session.advance()
   }
 
-  if (session.isFinished) {
+  useEffect(() => {
+    if (!session.isFinished) return
     const correct = session.answers.filter(a => a.wasCorrect).length
     navigate('summary', {
       result: {
@@ -61,8 +62,9 @@ export default function QuizScreen({ navigate, filter, progress, recordAnswer })
         textAnswered: session.textAnswered,
       },
     })
-    return null
-  }
+  }, [session.isFinished])
+
+  if (session.isFinished) return null
 
   const q = session.currentQuestion
   if (!q) return null
