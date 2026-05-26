@@ -6,7 +6,7 @@ export default function FlipCard({ question, answer, questionData, onResult }) {
   const [showExplanation, setShowExplanation] = useState(false)
 
   function handleFlip() {
-    if (!isFlipped) setIsFlipped(true)
+    setIsFlipped(prev => !prev)
   }
 
   return (
