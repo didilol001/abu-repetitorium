@@ -32,6 +32,15 @@ export default function FlipCard({ question, answer, questionData, onResult }) {
             <p className="text-abu-text text-sm leading-relaxed whitespace-pre-wrap">
               {questionData?.summary ?? answer}
             </p>
+            {questionData?.summary && (
+              <>
+                <div className="border-t border-slate-500 my-3" />
+                <p className="text-xs font-semibold text-abu-muted uppercase tracking-wider mb-2">
+                  Offizielle Lösung
+                </p>
+                <p className="text-abu-muted text-xs leading-relaxed whitespace-pre-wrap">{answer}</p>
+              </>
+            )}
           </div>
         </div>
       </div>
