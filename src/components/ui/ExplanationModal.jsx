@@ -22,24 +22,21 @@ export default function ExplanationModal({ question, onClose }) {
         </div>
 
         {question.type === 'multiple_choice' ? (
-          <div className="space-y-2">
-            <p className="text-abu-muted text-xs mb-3">Alle Antworten im Überblick — richtig und falsch:</p>
-            {question.options.map((opt, i) => {
-              const correct = question.correct.includes(i)
-              return (
-                <div
-                  key={i}
-                  className={`flex items-start gap-2 p-2.5 rounded-xl text-sm leading-relaxed ${
-                    correct
-                      ? 'bg-green-500/15 border border-green-500/30 text-green-300'
-                      : 'bg-red-500/10 border border-red-500/20 text-red-400'
-                  }`}
-                >
-                  <span className="flex-shrink-0 font-bold mt-0.5">{correct ? '✓' : '✗'}</span>
-                  <span>{opt}</span>
-                </div>
-              )
-            })}
+          <div>
+            <p className="text-abu-text text-sm leading-relaxed">
+              {question.explanation ?? 'Keine Erklärung vorhanden.'}
+            </p>
+            <div className="mt-4 pt-4 border-t border-abu-border">
+              <p className="text-abu-muted text-xs uppercase tracking-wider mb-2">Richtige Antwort(en)</p>
+              <div className="space-y-1.5">
+                {question.correct.map(i => (
+                  <div key={i} className="flex items-start gap-2 text-sm text-green-300">
+                    <span className="flex-shrink-0 font-bold mt-0.5">✓</span>
+                    <span>{question.options[i]}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         ) : (
           <div>
