@@ -13,7 +13,7 @@ export default function ExplanationModal({ question, onClose }) {
       onClick={onClose}
     >
       <div
-        className="bg-abu-card rounded-2xl border border-abu-border w-full max-w-sm p-5 max-h-[70vh] overflow-y-auto"
+        className="bg-abu-card rounded-2xl border border-abu-border w-full max-w-sm p-5 max-h-[75vh] overflow-y-auto"
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-4">
@@ -40,8 +40,16 @@ export default function ExplanationModal({ question, onClose }) {
           </div>
         ) : (
           <div>
-            <p className="text-abu-muted text-xs uppercase tracking-wider mb-2">Musterantwort zur Erinnerung</p>
-            <p className="text-abu-text text-sm leading-relaxed whitespace-pre-wrap">{question.answer}</p>
+            <p className="text-abu-muted text-xs uppercase tracking-wider mb-1">Kurzfassung</p>
+            <p className="text-abu-text text-sm leading-relaxed mb-4">
+              {question.summary ?? question.answer}
+            </p>
+            {question.summary && (
+              <div className="pt-4 border-t border-abu-border">
+                <p className="text-abu-muted text-xs uppercase tracking-wider mb-1">Offizielle Lösung</p>
+                <p className="text-abu-muted text-sm leading-relaxed whitespace-pre-wrap">{question.answer}</p>
+              </div>
+            )}
           </div>
         )}
       </div>
