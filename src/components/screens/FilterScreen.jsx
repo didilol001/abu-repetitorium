@@ -8,9 +8,18 @@ const YEAR_COLORS = {
   4: 'bg-emerald-500 border-emerald-500',
 }
 
-export default function FilterScreen({ navigate, initialFilter }) {
+function countWeak(questions, progress) {
+  return questions.filter(q => {
+    const rec = progress[q.id]
+    if (!rec || rec.attempts === 0 || rec.history.length === 0) return false
+    return rec.history.filter(Boolean).length / rec.history.length < 0.6
+  }).length
+}
+
+export default function FilterScreen({ navigate, initialFilter, progress = {} }) {
   const [years, setYears] = useState(initialFilter.years)
   const [type, setType] = useState(initialFilter.type)
+  const [weakOnly, setWeakOnly] = useState(initialFilter.weakOnly ?? false)
 
   function toggleYear(y) {
     if (y === 'all') {
@@ -26,10 +35,16 @@ export default function FilterScreen({ navigate, initialFilter }) {
     })
   }
 
-  const questionCount = getQuestions(years, type).length
+  const allFiltered = getQuestions(years, type)
+  const questionCount = weakOnly ? countWeak(allFiltered, progress) : allFiltered.length
+  const weakCount = countWeak(allFiltered, progress)
 
   function handleStart() {
-    navigate('quiz', { filter: { years, type } })
+    navigate('quiz', { filter: { years, type, weakOnly } })
+  }
+
+  function handleKanister() {
+    navigate('kanister', { filter: { years, type } })
   }
 
   return (
@@ -96,6 +111,23 @@ export default function FilterScreen({ navigate, initialFilter }) {
         </div>
       </div>
 
+      <div className="bg-abu-card rounded-2xl p-4 border border-abu-border mb-4 flex-shrink-0">
+        <h2 className="text-xs font-semibold text-abu-muted uppercase tracking-wider mb-3">Modus</h2>
+        <button
+          className={`w-full py-3 px-4 rounded-xl border-2 text-sm font-semibold transition-all active:scale-95 flex items-center justify-between ${
+            weakOnly
+              ? 'bg-red-500/20 border-red-500 text-red-300'
+              : 'border-abu-border bg-abu-border/20 text-abu-muted'
+          }`}
+          onClick={() => setWeakOnly(w => !w)}
+        >
+          <span>Nur schwache Fragen</span>
+          <span className={`text-xs px-2 py-0.5 rounded-full ${weakOnly ? 'bg-red-500/30 text-red-300' : 'bg-abu-border text-abu-muted'}`}>
+            {weakCount}
+          </span>
+        </button>
+      </div>
+
       <div className="flex-1" />
 
       <div className="flex-shrink-0">
@@ -113,6 +145,14 @@ export default function FilterScreen({ navigate, initialFilter }) {
         >
           Starten ({questionCount})
         </button>
+        {allFiltered.length > 15 && !weakOnly && (
+          <button
+            className="w-full mt-3 py-3 rounded-2xl border-2 border-abu-border text-abu-muted text-sm font-medium active:scale-[0.97] transition-transform hover:border-abu-neutral hover:text-abu-text"
+            onClick={handleKanister}
+          >
+            Als Kanister (15er) lernen
+          </button>
+        )}
       </div>
     </div>
   )

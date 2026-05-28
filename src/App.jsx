@@ -6,6 +6,7 @@ import HomeScreen from './components/screens/HomeScreen.jsx'
 import FilterScreen from './components/screens/FilterScreen.jsx'
 import QuizScreen from './components/screens/QuizScreen.jsx'
 import SummaryScreen from './components/screens/SummaryScreen.jsx'
+import KanisterScreen from './components/screens/KanisterScreen.jsx'
 
 const DEFAULT_FILTER = { years: [1, 2, 3, 4], type: 'both' }
 
@@ -22,6 +23,9 @@ export default function App() {
     if (extras.result) setSessionResult(extras.result)
     if (extras.presetType) {
       setFilter(f => ({ ...f, type: extras.presetType }))
+    }
+    if (extras.presetWeak) {
+      setFilter(f => ({ ...f, weakOnly: true }))
     }
     if (screen === 'quiz') setSessionKey(k => k + 1)
     setView(screen)
@@ -68,6 +72,14 @@ export default function App() {
           <FilterScreen
             navigate={navigate}
             initialFilter={filter}
+            progress={progress}
+          />
+        )}
+        {view === 'kanister' && (
+          <KanisterScreen
+            navigate={navigate}
+            filter={filter}
+            progress={progress}
           />
         )}
         {view === 'quiz' && (

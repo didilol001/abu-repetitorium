@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { getQuestions } from '../data/index.js'
+import { getQuestions, allQuestions } from '../data/index.js'
 
 function getRecentStreak(rec) {
   if (!rec || rec.history.length === 0) return 0
@@ -9,6 +9,12 @@ function getRecentStreak(rec) {
     else break
   }
   return streak
+}
+
+function isWeak(rec) {
+  if (!rec || rec.attempts === 0) return false
+  if (rec.history.length === 0) return false
+  return rec.history.filter(Boolean).length / rec.history.length < 0.6
 }
 
 function buildQueue(questions, progressMap) {
@@ -23,10 +29,15 @@ function buildQueue(questions, progressMap) {
 }
 
 export function useSession(filter, progress) {
-  const questions = useMemo(
-    () => getQuestions(filter.years, filter.type),
-    [filter.years, filter.type]
-  )
+  const questions = useMemo(() => {
+    if (filter.questionIds) {
+      const idSet = new Set(filter.questionIds)
+      return allQuestions.filter(q => idSet.has(q.id))
+    }
+    let qs = getQuestions(filter.years, filter.type)
+    if (filter.weakOnly) qs = qs.filter(q => isWeak(progress[q.id]))
+    return qs
+  }, [filter.years, filter.type, filter.weakOnly, filter.questionIds])
 
   const [queue] = useState(() => buildQueue(questions, progress))
   const [currentIndex, setCurrentIndex] = useState(0)

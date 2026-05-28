@@ -60,6 +60,13 @@ export default function HomeScreen({ navigate, getReadiness, resetProgress, user
         </div>
 
         <button
+          className="w-full py-3 bg-red-500/10 rounded-xl border border-red-500/40 text-red-400 text-sm font-medium active:scale-[0.97] transition-transform"
+          onClick={() => navigate('filter', { presetWeak: true })}
+        >
+          Schwache Fragen wiederholen
+        </button>
+
+        <button
           className="text-abu-muted text-xs text-center py-2"
           onClick={handleReset}
         >
