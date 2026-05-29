@@ -117,6 +117,7 @@ export default function QuizScreen({ navigate, filter, progress, recordAnswer })
               answer={q.answer}
               questionData={q}
               onResult={handleFlipResult}
+              inputMode={!!filter.inputMode}
             />
           </div>
         )}

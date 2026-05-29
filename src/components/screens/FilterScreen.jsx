@@ -20,6 +20,7 @@ export default function FilterScreen({ navigate, initialFilter, progress = {} })
   const [years, setYears] = useState(initialFilter.years)
   const [type, setType] = useState(initialFilter.type)
   const [weakOnly, setWeakOnly] = useState(initialFilter.weakOnly ?? false)
+  const [inputMode, setInputMode] = useState(initialFilter.inputMode ?? false)
 
   function toggleYear(y) {
     if (y === 'all') {
@@ -40,7 +41,7 @@ export default function FilterScreen({ navigate, initialFilter, progress = {} })
   const weakCount = countWeak(allFiltered, progress)
 
   function handleStart() {
-    navigate('quiz', { filter: { years, type, weakOnly } })
+    navigate('quiz', { filter: { years, type, weakOnly, inputMode } })
   }
 
   function handleKanister() {
@@ -126,6 +127,21 @@ export default function FilterScreen({ navigate, initialFilter, progress = {} })
             {weakCount}
           </span>
         </button>
+        {type !== 'mc' && (
+          <button
+            className={`w-full py-3 px-4 rounded-xl border-2 text-sm font-semibold transition-all active:scale-95 flex items-center justify-between ${
+              inputMode
+                ? 'bg-abu-primary/20 border-abu-primary text-abu-primary'
+                : 'border-abu-border bg-abu-border/20 text-abu-muted'
+            }`}
+            onClick={() => setInputMode(m => !m)}
+          >
+            <span>Eingabe-Modus</span>
+            <span className={`text-xs px-2 py-0.5 rounded-full ${inputMode ? 'bg-abu-primary/30 text-abu-primary' : 'bg-abu-border text-abu-muted'}`}>
+              {inputMode ? 'AN' : 'AUS'}
+            </span>
+          </button>
+        )}
       </div>
 
       <div className="flex-1" />

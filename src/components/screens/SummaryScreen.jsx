@@ -67,6 +67,14 @@ export default function SummaryScreen({ navigate, result, getReadiness }) {
         >
           Nochmals
         </button>
+        {result.answers.filter(a => !a.wasCorrect).length > 0 && (
+          <button
+            className="w-full py-4 bg-red-500/20 border-2 border-red-500 rounded-2xl text-red-300 font-bold text-base active:scale-[0.97] transition-transform"
+            onClick={() => navigate('quiz', { filter: { questionIds: result.answers.filter(a => !a.wasCorrect).map(a => a.id), inputMode: result.filter?.inputMode } })}
+          >
+            Falsche Karten wiederholen ({result.answers.filter(a => !a.wasCorrect).length})
+          </button>
+        )}
         <div className="grid grid-cols-2 gap-3">
           <button
             className="py-3 bg-abu-card border border-abu-border rounded-xl text-abu-text font-semibold text-sm active:scale-[0.97] transition-transform"
